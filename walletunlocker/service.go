@@ -700,6 +700,10 @@ func (u *UnlockerService) UnlockWallet(ctx context.Context,
 	in *lnrpc.UnlockWalletRequest) (*lnrpc.UnlockWalletResponse, error) {
 
 	password := in.WalletPassword
+	if in.RecoveryWindow < 0 {
+		return nil, fmt.Errorf("recovery window %d must be "+
+			"non-negative", in.RecoveryWindow)
+	}
 	recoveryWindow := uint32(in.RecoveryWindow)
 
 	unlockedWallet, unloadFn, err := u.LoadAndUnlock(
